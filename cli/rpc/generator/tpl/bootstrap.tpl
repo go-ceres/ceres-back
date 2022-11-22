@@ -24,12 +24,8 @@ func NewBootstrap() *Bootstrap {
 }
 
 func Init() error {{.Extra.LeftBrackets}}{{if .Registry}}
-    // registry
-    global.Registry = etcd.ScanConfig("{{.ServiceName}}").Build(){{end}}
-    // grpc client
-    global.Client = grpc.ScanConfig("{{.ServiceName}}"){{if .Registry}}.WithRegistry(global.Registry){{end}}.Build(){{if .orm}}
-    // orm
-    global.Db = {{.orm.newFunc}}
-    {{end}}
+    global.Registry = etcd.ScanConfig("{{.unTitleServiceName}}").Build(){{end}}
+    global.Client = grpc.ScanConfig("{{.unTitleServiceName}}"){{if .Registry}}.WithRegistry(global.Registry){{end}}.Build(){{range .components}}
+    global.{{.GlobalName}} = {{.InitStr}}{{end}}
     return nil
 }

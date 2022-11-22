@@ -17,6 +17,7 @@ package action
 
 import (
 	"errors"
+	"fmt"
 	"github.com/go-ceres/ceres/cli/rpc/config"
 	"github.com/go-ceres/ceres/cli/rpc/generator"
 	"github.com/go-ceres/ceres/utils"
@@ -154,21 +155,55 @@ func Protoc(ctx *cli.Context) error {
 	if registry != "none" {
 		conf.Registry = registry
 	}
-	// orm框架
+	// 数据库框架
 	orm := interact.SelectOne(
 		"please select database orm",
 		[]string{"none", "gorm"},
 		"0",
 	)
 	if orm != "none" {
-		conf.Orm = map[string]string{
-			"name":    orm,
-			"newFunc": "",
-		}
+		conf.Components = append(conf.Components, &config.Component{
+			Name:          orm,
+			GlobalImport:  []string{fmt.Sprintf(`"github.com/go-ceres/go-ceres/store/%s"`, orm)},
+			ImportPackage: []string{fmt.Sprintf(`"github.com/go-ceres/go-ceres/store/%s"`, orm)},
+			InitFunc: func(name string) string {
+				return orm + `.ScanConfig("` + name + `").Build()`
+			},
+			GlobalName: "Db",
+			ConfigFunc: func(name string) string {
+				return `[ceres.store.` + orm + `.` + name + `]
+    dns="root:root@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
+`
+			},
+			TypeName: "*gorm.DB",
+		})
+	}
+	// 缓存框架
+	cache := interact.SelectOne(
+		"please select cache center!",
+		[]string{"none", "redis", "memcached"},
+		"0",
+	)
+	if cache != "none" {
+		conf.Components = append(conf.Components, &config.Component{
+			Name:          cache,
+			GlobalImport:  []string{`"github.com/go-ceres/go-ceres/cache"`},
+			ImportPackage: []string{fmt.Sprintf(`"github.com/go-ceres/go-ceres/cache/%s"`, cache)},
+			InitFunc: func(name string) string {
+				return cache + `.ScanConfig("` + name + `").Build()`
+			},
+			GlobalName: "Cache",
+			ConfigFunc: func(name string) string {
+				return `[ceres.cache.` + name + `]
+    addr=["127.0.0.1"]
+`
+			},
+			TypeName: "cache.Cache",
+		})
 	}
 
 	// 是否生成对应的dto与service文件
-	conf.DtoAndService = interact.Confirm("Generate dto and service？", false)
+	conf.DtoAndService = interact.Confirm("Generate dto and service？", true)
 	// 设置protoc命令
 	conf.ProtocCmd = strings.Join(protoArgs, " ")
 	// 创建生成器

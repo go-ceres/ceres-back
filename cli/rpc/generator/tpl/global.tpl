@@ -7,7 +7,7 @@ import ({{.imports}}{{if .Registry}}
 
 var({{if .Registry}}
     Registry registry.Registry{{end}}
-    Client *grpc.Client{{if .orm}}
-   Db *{{.orm.name}}.DB
-   {{end}}
+    Client *grpc.Client
+    {{range .components}}{{.GlobalName}} {{.TypeName}}
+    {{end}}
 )

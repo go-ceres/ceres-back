@@ -17,7 +17,6 @@ package generator
 
 import (
 	_ "embed"
-	"fmt"
 	"github.com/go-ceres/ceres/cli/rpc/config"
 	"github.com/go-ceres/ceres/utils/formatx"
 	"github.com/go-ceres/ceres/utils/pathx"
@@ -37,9 +36,13 @@ func (g *Generator) GenGlobal(ctx DirContext, conf *config.Config) error {
 		return err
 	}
 	imports := make([]string, 0)
-	// orm框架
-	if conf.Orm != nil {
-		imports = append(imports, fmt.Sprintf(`"%s"`, filepath.Join("github.com/go-ceres/go-ceres/store", conf.Orm["name"])))
+	for _, component := range conf.Components {
+		if len(component.InitStr) > 0 {
+			continue
+		}
+		// 添加import
+		imports = append(imports, component.GlobalImport...)
+
 	}
 
 	fileName := filepath.Join(dir.Filename, globalFilename+".go")
@@ -49,9 +52,9 @@ func (g *Generator) GenGlobal(ctx DirContext, conf *config.Config) error {
 	}
 
 	return templatex.With("global").GoFmt(true).Parse(text).SaveTo(map[string]interface{}{
-		"Registry": conf.Registry,
-		"Extra":    extra,
-		"imports":  strings.Join(imports, "\n"),
-		"orm":      conf.Orm,
+		"Registry":   conf.Registry,
+		"Extra":      extra,
+		"imports":    strings.Join(imports, "\n"),
+		"components": conf.Components,
 	}, fileName, false)
 }

@@ -37,7 +37,7 @@ type ServerTemplateData struct {
 
 // GenMain 生成main文件
 func (g *Generator) GenMain(ctx DirContext, conf *config.Config) error {
-	mainFilename, err := formatx.FileNamingFormat(g.config.Style, "main")
+	mainFilename, err := formatx.FileNamingFormat(g.config.Style, ctx.GetServiceName().Source())
 	if err != nil {
 		return err
 	}

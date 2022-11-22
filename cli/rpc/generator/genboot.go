@@ -23,6 +23,7 @@ import (
 	"github.com/go-ceres/ceres/cli/rpc/parser/model"
 	"github.com/go-ceres/ceres/utils/formatx"
 	"github.com/go-ceres/ceres/utils/pathx"
+	"github.com/go-ceres/ceres/utils/stringx"
 	"github.com/go-ceres/ceres/utils/templatex"
 	"path/filepath"
 	"strings"
@@ -53,17 +54,22 @@ func (g *Generator) genBase(ctx DirContext, conf *config.Config) error {
 	imports := make([]string, 0)
 	globalImport := fmt.Sprintf(`"%s"`, ctx.GetGlobal().Package)
 	imports = append(imports, globalImport)
-	// orm框架
-	if conf.Orm != nil {
-		imports = append(imports, fmt.Sprintf(`"%s"`, filepath.Join("github.com/go-ceres/go-ceres/store", conf.Orm["name"])))
-		conf.Orm["newFunc"] = conf.Orm["name"] + `.ScanConfig("` + ctx.GetServiceName().UnTitle() + `").Build()`
+	// 组件初始化
+	for _, component := range conf.Components {
+		if len(component.InitStr) > 0 {
+			continue
+		}
+		component.InitStr = component.InitFunc(stringx.NewString(ctx.GetServiceName().ToCamel()).UnTitle())
+		// 添加import
+		imports = append(imports, component.ImportPackage...)
 	}
 	return templatex.With("boot").GoFmt(true).Parse(content).SaveTo(map[string]interface{}{
-		"Registry":    conf.Registry,
-		"Extra":       extra,
-		"imports":     strings.Join(imports, "\n"),
-		"ServiceName": ctx.GetServiceName().UnTitle(),
-		"orm":         conf.Orm,
+		"Registry":           conf.Registry,
+		"Extra":              extra,
+		"imports":            strings.Join(imports, "\n"),
+		"ServiceName":        ctx.GetServiceName().ToCamel(),
+		"unTitleServiceName": stringx.NewString(ctx.GetServiceName().ToCamel()).UnTitle(),
+		"components":         conf.Components,
 	}, fileName, false)
 }
 

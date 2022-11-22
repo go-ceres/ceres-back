@@ -22,6 +22,7 @@ import (
 	"github.com/go-ceres/ceres/cli/rpc/parser/model"
 	"github.com/go-ceres/ceres/utils/formatx"
 	"github.com/go-ceres/ceres/utils/pathx"
+	"github.com/go-ceres/ceres/utils/stringx"
 	"github.com/go-ceres/ceres/utils/templatex"
 	"path/filepath"
 )
@@ -36,6 +37,13 @@ func (g *Generator) GenConfig(ctx DirContext, _ model.Proto, conf *config.Config
 	if err != nil {
 		return err
 	}
+	// 组件初始化
+	for _, component := range conf.Components {
+		if len(component.ConfigStr) > 0 {
+			continue
+		}
+		component.ConfigStr = component.ConfigFunc(stringx.NewString(ctx.GetServiceName().ToCamel()).UnTitle())
+	}
 	// 文件名
 	fileName := filepath.Join(dir.Filename, fmt.Sprintf("%v.toml", configFilename))
 	// 获取模板内容
@@ -46,6 +54,6 @@ func (g *Generator) GenConfig(ctx DirContext, _ model.Proto, conf *config.Config
 	return templatex.With("etc").Parse(context).SaveTo(map[string]interface{}{
 		"serviceName": ctx.GetServiceName().UnTitle(),
 		"registry":    conf.Registry,
-		"orm":         conf.Orm,
+		"components":  conf.Components,
 	}, fileName, false)
 }
