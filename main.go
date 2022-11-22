@@ -2,8 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/go-ceres/ceres/build"
-	new2 "github.com/go-ceres/ceres/new"
+	"github.com/go-ceres/ceres/cli/build"
+	"github.com/go-ceres/ceres/cli/common"
+	"github.com/go-ceres/ceres/cli/model"
+	"github.com/go-ceres/ceres/cli/rpc"
+	"github.com/go-ceres/ceres/internal/version"
 	"github.com/go-ceres/cli/v2"
 	"github.com/go-ceres/go-ceres/logger"
 	"os"
@@ -11,7 +14,6 @@ import (
 )
 
 var (
-	version  = "0.1.0"
 	commands = []*cli.Command{
 		// 构建相关
 		{
@@ -21,9 +23,20 @@ var (
 			Action: build.Run,
 		},
 		{
-			Name:        "new",
-			Usage:       "create go-ceres application",
-			Subcommands: new2.Command,
+			Name:  "api",
+			Usage: "generate api code",
+		},
+		{
+			Name:        "rpc",
+			Usage:       "generate rpc code",
+			Flags:       append(common.Flags, rpc.Flags...),
+			Subcommands: rpc.Commands,
+		},
+		{
+			Name:        "model",
+			Usage:       "generate model code",
+			Flags:       model.Flags,
+			Subcommands: model.Commands,
 		},
 	}
 )
@@ -32,10 +45,13 @@ func main() {
 	app := cli.NewApp()
 	app.Usage = "a cli tool for go-ceres"
 	app.Description = "a cli tool for go-ceres"
-	app.Version = fmt.Sprintf("%s %s/%s", version, runtime.GOOS, runtime.GOARCH)
+	app.UseShortOptionHandling = true
+	app.Version = fmt.Sprintf("%s %s/%s", version.BuildVersion, runtime.GOOS, runtime.GOARCH)
 	app.Commands = commands
-	if err := app.Run(os.Args); err != nil {
+	app.Flags = append(app.Flags)
+	app.ExitErrHandler = func(context *cli.Context, err error) {
+		_ = cli.ShowCommandHelp(context, context.Command.Name)
 		logger.Error(err)
-		os.Exit(0)
 	}
+	_ = app.Run(os.Args)
 }
