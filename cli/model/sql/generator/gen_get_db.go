@@ -19,14 +19,14 @@ import (
 	_ "embed"
 	"github.com/go-ceres/ceres/cli/model/sql/parser"
 	"github.com/go-ceres/ceres/utils"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/pathx"
 )
 
 //go:embed tpl/db.tpl
 var getDbTemplate string
 
 func (g *Generator) genGetDb(table parser.Table) (string, error) {
-	tplText, err := pathc.LoadTpl(category, getDbTemplateFile, getDbTemplate)
+	tplText, err := pathx.LoadTpl(category, getDbTemplateFile, getDbTemplate)
 	if err != nil {
 		return "", err
 	}

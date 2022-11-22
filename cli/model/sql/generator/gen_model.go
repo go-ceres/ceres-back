@@ -21,10 +21,10 @@ import (
 	"github.com/go-ceres/ceres/cli/model/sql/args"
 	"github.com/go-ceres/ceres/cli/model/sql/parser"
 	"github.com/go-ceres/ceres/ctx"
-	"github.com/go-ceres/ceres/utils/formatc"
-	"github.com/go-ceres/ceres/utils/pathc"
-	"github.com/go-ceres/ceres/utils/stringc"
-	"github.com/go-ceres/ceres/utils/templatec"
+	"github.com/go-ceres/ceres/utils/formatx"
+	"github.com/go-ceres/ceres/utils/pathx"
+	"github.com/go-ceres/ceres/utils/stringx"
+	"github.com/go-ceres/ceres/utils/templatex"
 	"path/filepath"
 )
 
@@ -34,18 +34,18 @@ var modelTemplate string
 // genCustomRepository 生成自定义代码
 func (g *Generator) genCustomRepository(table parser.Table, projectCtx *ctx.Project, entityCtx *ctx.Project, dlArgs *args.DDlArgs) (*CodeDescribe, error) {
 	res := new(CodeDescribe)
-	content, err := pathc.LoadTpl(category, modelTemplateFile, modelTemplate)
+	content, err := pathx.LoadTpl(category, modelTemplateFile, modelTemplate)
 	if err != nil {
 		return nil, err
 	}
 
-	out, err := templatec.With("model").Parse(content).Execute(map[string]interface{}{
+	out, err := templatex.With("model").Parse(content).Execute(map[string]interface{}{
 		"pkg":                   filepath.Base(projectCtx.WorkDir),
 		"cache":                 dlArgs.Cache,
 		"upperStartCamelObject": table.Name.ToCamel(),
-		"lowerStartCamelObject": stringc.NewString(table.Name.ToCamel()).UnTitle(),
+		"lowerStartCamelObject": stringx.NewString(table.Name.ToCamel()).UnTitle(),
 	})
-	modelFilename, err := formatc.FileNamingFormat(g.config.Style,
+	modelFilename, err := formatx.FileNamingFormat(g.config.Style,
 		fmt.Sprintf("%s_model", table.Name.Source()))
 	if err != nil {
 		return nil, err

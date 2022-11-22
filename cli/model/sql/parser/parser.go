@@ -16,7 +16,7 @@
 package parser
 
 import (
-	"github.com/go-ceres/ceres/utils/stringc"
+	"github.com/go-ceres/ceres/utils/stringx"
 	"io"
 	"io/ioutil"
 	"strings"
@@ -25,7 +25,7 @@ import (
 
 // Field 字段信息
 type Field struct {
-	Name         stringc.String // 字段名称
+	Name         stringx.String // 字段名称
 	OriginalName string         // 原始字段
 	Type         string         // 字段类型（对应)
 	Fulltext     bool           // 全文索引
@@ -43,8 +43,8 @@ type Statement struct {
 
 // Table 表信息
 type Table struct {
-	Name     stringc.String // 表名
-	DataBase stringc.String // 数据库名
+	Name     stringx.String // 表名
+	DataBase stringx.String // 数据库名
 	Primary  *Field         // 主键
 	Options  []string       // 创建表结构的参数
 	Time     bool           // 是否需要引入time组件
@@ -79,8 +79,8 @@ func Parse(filename, database string, strict bool) ([]*Table, error) {
 func ParseTable(table *sqlparser.CreateTable, database string, strict bool) *Table {
 	//
 	res := &Table{
-		DataBase: stringc.NewString(database),
-		Name:     stringc.NewString(table.Table.Name.String()),
+		DataBase: stringx.NewString(database),
+		Name:     stringx.NewString(table.Table.Name.String()),
 		Options:  []string{},
 		Fields:   []*Field{},
 	}
@@ -114,7 +114,7 @@ func ParseTable(table *sqlparser.CreateTable, database string, strict bool) *Tab
 	// 获取创建表时的字段
 	for _, column := range table.TableSpec.Columns {
 		field := new(Field)
-		field.Name = stringc.NewString(column.Name.String())
+		field.Name = stringx.NewString(column.Name.String())
 		field.Number = false
 		field.OriginalName = column.Name.String()
 		field.Type = func(columnType string) string {

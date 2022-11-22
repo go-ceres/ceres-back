@@ -19,9 +19,9 @@ import (
 	_ "embed"
 	"fmt"
 	"github.com/go-ceres/ceres/cli/rpc/config"
-	"github.com/go-ceres/ceres/utils/formatc"
-	"github.com/go-ceres/ceres/utils/pathc"
-	"github.com/go-ceres/ceres/utils/templatec"
+	"github.com/go-ceres/ceres/utils/formatx"
+	"github.com/go-ceres/ceres/utils/pathx"
+	"github.com/go-ceres/ceres/utils/templatex"
 	"path/filepath"
 	"strings"
 )
@@ -32,7 +32,7 @@ var globalTemplate string
 // GenGlobal 生成全局上下文
 func (g *Generator) GenGlobal(ctx DirContext, conf *config.Config) error {
 	dir := ctx.GetGlobal()
-	globalFilename, err := formatc.FileNamingFormat(g.config.Style, "global")
+	globalFilename, err := formatx.FileNamingFormat(g.config.Style, "global")
 	if err != nil {
 		return err
 	}
@@ -43,12 +43,12 @@ func (g *Generator) GenGlobal(ctx DirContext, conf *config.Config) error {
 	}
 
 	fileName := filepath.Join(dir.Filename, globalFilename+".go")
-	text, err := pathc.LoadTpl(category, globalTemplateFile, globalTemplate)
+	text, err := pathx.LoadTpl(category, globalTemplateFile, globalTemplate)
 	if err != nil {
 		return err
 	}
 
-	return templatec.With("global").GoFmt(true).Parse(text).SaveTo(map[string]interface{}{
+	return templatex.With("global").GoFmt(true).Parse(text).SaveTo(map[string]interface{}{
 		"Registry": conf.Registry,
 		"Extra":    extra,
 		"imports":  strings.Join(imports, "\n"),

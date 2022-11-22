@@ -16,7 +16,7 @@
 package ctx
 
 import (
-	"github.com/go-ceres/ceres/utils/execc"
+	"github.com/go-ceres/ceres/utils/execx"
 	"path/filepath"
 )
 
@@ -35,7 +35,7 @@ func PrepareProject(workDir string) (*Project, error) {
 		return ctx, nil
 	}
 	name := filepath.Base(workDir)
-	_, err = execc.Command("go mod init "+name, workDir)
+	_, err = execx.Command("go mod init "+name, workDir)
 	if err != nil {
 		return nil, err
 	}

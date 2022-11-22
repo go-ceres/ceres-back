@@ -19,7 +19,7 @@ import (
 	"github.com/go-ceres/ceres/cli/rpc/config"
 	"github.com/go-ceres/ceres/cli/rpc/parser"
 	"github.com/go-ceres/ceres/ctx"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/pathx"
 	"path/filepath"
 )
 
@@ -32,7 +32,7 @@ func (g *Generator) Generate(conf *config.Config) error {
 	}
 
 	// 2.创建输出文件夹
-	err = pathc.MkdirIfNotExist(abs)
+	err = pathx.MkdirIfNotExist(abs)
 	if err != nil {
 		return err
 	}

@@ -19,8 +19,8 @@ import (
 	_ "embed"
 	"github.com/go-ceres/ceres/cli/model/sql/parser"
 	"github.com/go-ceres/ceres/utils"
-	"github.com/go-ceres/ceres/utils/pathc"
-	"github.com/go-ceres/ceres/utils/templatec"
+	"github.com/go-ceres/ceres/utils/pathx"
+	"github.com/go-ceres/ceres/utils/templatex"
 	"strings"
 )
 
@@ -32,11 +32,11 @@ var queryTagTemplate string
 
 // genTag 生成字段标签
 func genTag(tag string) (string, error) {
-	tplText, err := pathc.LoadTpl(category, tagTemplateFile, strings.ReplaceAll(tagTemplate, "\n", ""))
+	tplText, err := pathx.LoadTpl(category, tagTemplateFile, strings.ReplaceAll(tagTemplate, "\n", ""))
 	if err != nil {
 		return "", err
 	}
-	text, err := templatec.With("tag").Parse(tplText).Execute(map[string]interface{}{
+	text, err := templatex.With("tag").Parse(tplText).Execute(map[string]interface{}{
 		"tag": tag,
 	})
 	if err != nil {
@@ -47,7 +47,7 @@ func genTag(tag string) (string, error) {
 
 // genQueryTag 生成查询字段标签
 func genQueryTag(field *parser.Field) (string, error) {
-	tplText, err := pathc.LoadTpl(category, queryTagTemplateFile, strings.ReplaceAll(queryTagTemplate, "\n", ""))
+	tplText, err := pathx.LoadTpl(category, queryTagTemplateFile, strings.ReplaceAll(queryTagTemplate, "\n", ""))
 	if err != nil {
 		return "", err
 	}

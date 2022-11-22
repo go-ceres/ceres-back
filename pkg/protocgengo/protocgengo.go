@@ -3,7 +3,7 @@ package protocgengo
 import (
 	"github.com/go-ceres/ceres/pkg/golang"
 	"github.com/go-ceres/ceres/utils/env"
-	"github.com/go-ceres/ceres/utils/execc"
+	"github.com/go-ceres/ceres/utils/execx"
 	"github.com/go-ceres/ceres/utils/installer"
 	"strings"
 	"time"
@@ -39,7 +39,7 @@ func Version() (string, error) {
 	}
 	versionC := make(chan string)
 	go func(c chan string) {
-		version, _ := execc.Command(path+" --version", "")
+		version, _ := execx.Command(path+" --version", "")
 		fields := strings.Fields(version)
 		if len(fields) > 1 {
 			c <- fields[1]

@@ -21,8 +21,8 @@ import (
 	"github.com/go-ceres/ceres/cli/model/sql/parser"
 	"github.com/go-ceres/ceres/ctx"
 	"github.com/go-ceres/ceres/utils"
-	"github.com/go-ceres/ceres/utils/pathc"
-	"github.com/go-ceres/ceres/utils/stringc"
+	"github.com/go-ceres/ceres/utils/pathx"
+	"github.com/go-ceres/ceres/utils/stringx"
 )
 
 //go:embed tpl/update.tpl
@@ -30,7 +30,7 @@ var updateTemplate string
 
 // GenUpdate 生成修改代码
 func (g *Generator) GenUpdate(table parser.Table, projectCtx *ctx.Project, entityCtx *ctx.Project, args *args.DDlArgs) (string, error) {
-	tplText, err := pathc.LoadTpl(category, updateTemplateFile, updateTemplate)
+	tplText, err := pathx.LoadTpl(category, updateTemplateFile, updateTemplate)
 	if err != nil {
 		return "", err
 	}
@@ -38,7 +38,7 @@ func (g *Generator) GenUpdate(table parser.Table, projectCtx *ctx.Project, entit
 		"camelName":    table.Name.ToCamel(),
 		"originalName": table.Primary.OriginalName,
 		"entity":       len(entityCtx.Path) > 0,
-		"packageName":  stringc.NewString(table.Name.ToCamel()).UnTitle() + "Entity",
+		"packageName":  stringx.NewString(table.Name.ToCamel()).UnTitle() + "Entity",
 		"fieldType":    table.Primary.Type,
 		"fieldName":    table.Primary.Name.UnTitle(),
 	})

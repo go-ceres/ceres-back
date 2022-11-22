@@ -21,9 +21,9 @@ import (
 	"github.com/go-ceres/ceres/cli/rpc/config"
 	"github.com/go-ceres/ceres/cli/rpc/parser"
 	"github.com/go-ceres/ceres/cli/rpc/parser/model"
-	"github.com/go-ceres/ceres/utils/formatc"
-	"github.com/go-ceres/ceres/utils/pathc"
-	"github.com/go-ceres/ceres/utils/templatec"
+	"github.com/go-ceres/ceres/utils/formatx"
+	"github.com/go-ceres/ceres/utils/pathx"
+	"github.com/go-ceres/ceres/utils/templatex"
 	"path/filepath"
 	"strings"
 )
@@ -46,7 +46,7 @@ func (g *Generator) GenBoot(ctx DirContext, proto model.Proto, conf *config.Conf
 // genBase 生成基础
 func (g *Generator) genBase(ctx DirContext, conf *config.Config) error {
 	fileName := filepath.Join(ctx.GetBoot().Filename, fmt.Sprintf("%v.go", "bootstrap"))
-	content, err := pathc.LoadTpl(category, bootTemplateFileFile, bootTemplate)
+	content, err := pathx.LoadTpl(category, bootTemplateFileFile, bootTemplate)
 	if err != nil {
 		return err
 	}
@@ -58,7 +58,7 @@ func (g *Generator) genBase(ctx DirContext, conf *config.Config) error {
 		imports = append(imports, fmt.Sprintf(`"%s"`, filepath.Join("github.com/go-ceres/go-ceres/store", conf.Orm["name"])))
 		conf.Orm["newFunc"] = conf.Orm["name"] + `.ScanConfig("` + ctx.GetServiceName().UnTitle() + `").Build()`
 	}
-	return templatec.With("boot").GoFmt(true).Parse(content).SaveTo(map[string]interface{}{
+	return templatex.With("boot").GoFmt(true).Parse(content).SaveTo(map[string]interface{}{
 		"Registry":    conf.Registry,
 		"Extra":       extra,
 		"imports":     strings.Join(imports, "\n"),
@@ -69,7 +69,7 @@ func (g *Generator) genBase(ctx DirContext, conf *config.Config) error {
 
 // genServerBoot 初始化服务启动代码
 func (g *Generator) genServerBoot(ctx DirContext, proto model.Proto, conf *config.Config) error {
-	bootFilename, err := formatc.FileNamingFormat(g.config.Style, ctx.GetServiceName().Source())
+	bootFilename, err := formatx.FileNamingFormat(g.config.Style, ctx.GetServiceName().Source())
 	if err != nil {
 		return err
 	}
@@ -100,11 +100,11 @@ func (g *Generator) genServerBoot(ctx DirContext, proto model.Proto, conf *confi
 		})
 	}
 
-	content, err := pathc.LoadTpl(category, serverBootTemplateFileFile, serverBootTemplate)
+	content, err := pathx.LoadTpl(category, serverBootTemplateFileFile, serverBootTemplate)
 	if err != nil {
 		return err
 	}
-	return templatec.With("boot").GoFmt(true).Parse(content).SaveTo(map[string]interface{}{
+	return templatex.With("boot").GoFmt(true).Parse(content).SaveTo(map[string]interface{}{
 		"imports":         strings.Join(imports, "\n"),
 		"Registry":        conf.Registry,
 		"serverNames":     serverNames,

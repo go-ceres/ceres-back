@@ -21,7 +21,7 @@ import (
 	"github.com/go-ceres/ceres/cli/model/sql/parser"
 	"github.com/go-ceres/ceres/ctx"
 	"github.com/go-ceres/ceres/utils"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/pathx"
 )
 
 //go:embed tpl/delete.tpl
@@ -29,7 +29,7 @@ var deleteTemplate string
 
 // genDelete 生成删除代码
 func (g *Generator) genDelete(table parser.Table, projectCtx *ctx.Project, entityCtx *ctx.Project, args *args.DDlArgs) (string, error) {
-	tplText, err := pathc.LoadTpl(category, deleteTemplateFile, deleteTemplate)
+	tplText, err := pathx.LoadTpl(category, deleteTemplateFile, deleteTemplate)
 	if err != nil {
 		return "", err
 	}

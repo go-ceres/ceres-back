@@ -4,10 +4,10 @@ import (
 	"archive/zip"
 	"fmt"
 	"github.com/go-ceres/ceres/utils/env"
-	"github.com/go-ceres/ceres/utils/execc"
+	"github.com/go-ceres/ceres/utils/execx"
 	"github.com/go-ceres/ceres/utils/installer"
 	"github.com/go-ceres/ceres/utils/vars"
-	"github.com/go-ceres/ceres/utils/zipc"
+	"github.com/go-ceres/ceres/utils/zipx"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -49,7 +49,7 @@ func Install(cacheDir string) (string, error) {
 			return "", err
 		}
 
-		return dest, zipc.Unpacking(tempFile, filepath.Dir(dest), func(f *zip.File) bool {
+		return dest, zipx.Unpacking(tempFile, filepath.Dir(dest), func(f *zip.File) bool {
 			return filepath.Base(f.Name) == filepath.Base(dest)
 		})
 	})
@@ -65,7 +65,7 @@ func Version() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	version, err := execc.Command(path+" --version", "")
+	version, err := execx.Command(path+" --version", "")
 	if err != nil {
 		return "", err
 	}

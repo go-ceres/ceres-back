@@ -21,10 +21,10 @@ import (
 	"github.com/go-ceres/ceres/cli/rpc/config"
 	"github.com/go-ceres/ceres/cli/rpc/parser"
 	"github.com/go-ceres/ceres/cli/rpc/parser/model"
-	"github.com/go-ceres/ceres/utils/formatc"
-	"github.com/go-ceres/ceres/utils/pathc"
-	"github.com/go-ceres/ceres/utils/stringc"
-	"github.com/go-ceres/ceres/utils/templatec"
+	"github.com/go-ceres/ceres/utils/formatx"
+	"github.com/go-ceres/ceres/utils/pathx"
+	"github.com/go-ceres/ceres/utils/stringx"
+	"github.com/go-ceres/ceres/utils/templatex"
 	"path/filepath"
 	"strings"
 )
@@ -60,10 +60,10 @@ func (g *Generator) genServerCompatibility(ctx DirContext, proto model.Proto) er
 	pbImport := fmt.Sprintf(`"%v"`, ctx.GetPb().Package)
 	imports := []string{logicImport, pbImport}
 
-	head := templatec.GetHead(proto.Name)
+	head := templatex.GetHead(proto.Name)
 
 	service := proto.Service[0]
-	serverFilename, err := formatc.FileNamingFormat(g.config.Style, service.Name+"_server")
+	serverFilename, err := formatx.FileNamingFormat(g.config.Style, service.Name+"_server")
 	if err != nil {
 		return err
 	}
@@ -74,7 +74,7 @@ func (g *Generator) genServerCompatibility(ctx DirContext, proto model.Proto) er
 		return err
 	}
 
-	text, err := pathc.LoadTpl(category, serverTemplateFile, serverTemplate)
+	text, err := pathx.LoadTpl(category, serverTemplateFile, serverTemplate)
 	if err != nil {
 		return err
 	}
@@ -87,12 +87,12 @@ func (g *Generator) genServerCompatibility(ctx DirContext, proto model.Proto) er
 		}
 	}
 
-	return templatec.With("server").GoFmt(true).Parse(text).SaveTo(map[string]interface{}{
+	return templatex.With("server").GoFmt(true).Parse(text).SaveTo(map[string]interface{}{
 		"head":      head,
 		"pbPackage": proto.PbPackage,
 		"unimplementedServer": fmt.Sprintf("%s.Unimplemented%sServer", proto.PbPackage,
-			stringc.NewString(service.Name).ToCamel()),
-		"server":    stringc.NewString(service.Name).ToCamel(),
+			stringx.NewString(service.Name).ToCamel()),
+		"server":    stringx.NewString(service.Name).ToCamel(),
 		"imports":   strings.Join(imports, "\n"),
 		"funcs":     strings.Join(funcList, "\n"),
 		"logicList": logicList,
@@ -110,7 +110,7 @@ func (g *Generator) genServerGroup(ctx DirContext, proto model.Proto) error {
 			logicImport string
 		)
 
-		serverFilename, err := formatc.FileNamingFormat(g.config.Style, service.Name+"_server")
+		serverFilename, err := formatx.FileNamingFormat(g.config.Style, service.Name+"_server")
 		if err != nil {
 			return err
 		}
@@ -133,14 +133,14 @@ func (g *Generator) genServerGroup(ctx DirContext, proto model.Proto) error {
 
 		imports := []string{logicImport, pbImport}
 
-		head := templatec.GetHead(proto.Name)
+		head := templatex.GetHead(proto.Name)
 
 		funcList, logicList, err := g.genFunctions(proto.PbPackage, service, true)
 		if err != nil {
 			return err
 		}
 
-		text, err := pathc.LoadTpl(category, serverTemplateFile, serverTemplate)
+		text, err := pathx.LoadTpl(category, serverTemplateFile, serverTemplate)
 		if err != nil {
 			return err
 		}
@@ -153,12 +153,12 @@ func (g *Generator) genServerGroup(ctx DirContext, proto model.Proto) error {
 			}
 		}
 
-		if err = templatec.With("server").GoFmt(true).Parse(text).SaveTo(map[string]interface{}{
+		if err = templatex.With("server").GoFmt(true).Parse(text).SaveTo(map[string]interface{}{
 			"head":      head,
 			"pbPackage": proto.PbPackage,
 			"unimplementedServer": fmt.Sprintf("%s.Unimplemented%sServer", proto.PbPackage,
-				stringc.NewString(service.Name).ToCamel()),
-			"server":    stringc.NewString(service.Name).ToCamel(),
+				stringx.NewString(service.Name).ToCamel()),
+			"server":    stringx.NewString(service.Name).ToCamel(),
 			"imports":   strings.Join(imports, "\n"),
 			"funcs":     strings.Join(funcList, "\n"),
 			"logicList": logicList,
@@ -179,7 +179,7 @@ func (g *Generator) genFunctions(goPackage string, service model.Service, multip
 		logicPkg     string
 	)
 	for _, rpc := range service.RPC {
-		text, err := pathc.LoadTpl(category, serverFuncTemplateFile, functionTemplate)
+		text, err := pathx.LoadTpl(category, serverFuncTemplateFile, functionTemplate)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -187,20 +187,20 @@ func (g *Generator) genFunctions(goPackage string, service model.Service, multip
 		var logicName string
 		if !multiple {
 			logicPkg = "logic"
-			logicName = fmt.Sprintf("%sLogic", stringc.NewString(rpc.Name).ToCamel())
+			logicName = fmt.Sprintf("%sLogic", stringx.NewString(rpc.Name).ToCamel())
 		} else {
 			nameJoin := fmt.Sprintf("%s_logic", service.Name)
-			logicPkg = strings.ToLower(stringc.NewString(nameJoin).ToCamel())
-			logicName = fmt.Sprintf("%sLogic", stringc.NewString(rpc.Name).ToCamel())
+			logicPkg = strings.ToLower(stringx.NewString(nameJoin).ToCamel())
+			logicName = fmt.Sprintf("%sLogic", stringx.NewString(rpc.Name).ToCamel())
 		}
 
 		comment := parser.GetComment(rpc.Doc())
 		streamServer := fmt.Sprintf("%s.%s_%s%s", goPackage, parser.CamelCase(service.Name),
 			parser.CamelCase(rpc.Name), "Server")
-		buffer, err := templatec.With("func").Parse(text).Execute(map[string]interface{}{
-			"server":           stringc.NewString(service.Name).ToCamel(),
+		buffer, err := templatex.With("func").Parse(text).Execute(map[string]interface{}{
+			"server":           stringx.NewString(service.Name).ToCamel(),
 			"logicName":        logicName,
-			"unTitleLogicName": stringc.NewString(logicName).UnTitle(),
+			"unTitleLogicName": stringx.NewString(logicName).UnTitle(),
 			"method":           parser.CamelCase(rpc.Name),
 			"request":          fmt.Sprintf("*%s.%s", goPackage, parser.CamelCase(rpc.RequestType)),
 			"response":         fmt.Sprintf("*%s.%s", goPackage, parser.CamelCase(rpc.ReturnsType)),
@@ -219,7 +219,7 @@ func (g *Generator) genFunctions(goPackage string, service model.Service, multip
 		temp := &LogicDesc{
 			LogicPackage: logicPkg,
 			LogicName:    logicName,
-			UnTitleName:  stringc.NewString(logicName).UnTitle(),
+			UnTitleName:  stringx.NewString(logicName).UnTitle(),
 		}
 
 		functionList = append(functionList, buffer.String())

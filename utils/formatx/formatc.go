@@ -1,4 +1,4 @@
-package formatc
+package formatx
 
 import (
 	"bytes"

@@ -19,7 +19,7 @@ import (
 	"errors"
 	"github.com/go-ceres/ceres/cli/api/config"
 	"github.com/go-ceres/ceres/cli/api/gen"
-	"github.com/go-ceres/ceres/utils/stringc"
+	"github.com/go-ceres/ceres/utils/stringx"
 	"github.com/go-ceres/cli/v2"
 	"github.com/gookit/gcli/v3/interact"
 	"os"
@@ -67,7 +67,7 @@ func Run(ctx *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	conf.WorkDir = filepath.Join(projectPath, stringc.SnakeString(conf.Name))
+	conf.WorkDir = filepath.Join(projectPath, stringx.SnakeString(conf.Name))
 	// swagger文件
 	conf.SwaggerFile = ctx.String("file")
 	// 如果工作空间已经存在相应代码是否进行覆盖

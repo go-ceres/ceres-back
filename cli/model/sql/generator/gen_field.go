@@ -19,9 +19,9 @@ import (
 	_ "embed"
 	"github.com/go-ceres/ceres/cli/model/sql/parser"
 	"github.com/go-ceres/ceres/utils"
-	"github.com/go-ceres/ceres/utils/pathc"
-	"github.com/go-ceres/ceres/utils/stringc"
-	"github.com/go-ceres/ceres/utils/templatec"
+	"github.com/go-ceres/ceres/utils/pathx"
+	"github.com/go-ceres/ceres/utils/stringx"
+	"github.com/go-ceres/ceres/utils/templatex"
 	"strings"
 )
 
@@ -49,7 +49,7 @@ func (g *Generator) genQueryFields(fields []*parser.Field) (string, error) {
 		this.OriginalName = field.OriginalName
 		// 主键配置，用于多个主键查询
 		if field.Primary {
-			this.Name = stringc.NewString(field.Name.ToCamel() + "s")
+			this.Name = stringx.NewString(field.Name.ToCamel() + "s")
 			this.OriginalName = field.OriginalName + "s"
 			this.Type = "[]" + field.Type
 		} else if field.Unique || field.Fulltext {
@@ -79,7 +79,7 @@ func genQueryField(field *parser.Field) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	tplText, err := pathc.LoadTpl(category, fieldTemplateFile, fieldTemplate)
+	tplText, err := pathx.LoadTpl(category, fieldTemplateFile, fieldTemplate)
 	if err != nil {
 		return "", err
 	}
@@ -96,7 +96,7 @@ func genQueryField(field *parser.Field) (string, error) {
 
 // genField 生成带个字段代码
 func genField(field *parser.Field, po bool) (string, error) {
-	tplText, err := pathc.LoadTpl(category, fieldTemplateFile, fieldTemplate)
+	tplText, err := pathx.LoadTpl(category, fieldTemplateFile, fieldTemplate)
 	if err != nil {
 		return "", err
 	}
@@ -112,7 +112,7 @@ func genField(field *parser.Field, po bool) (string, error) {
 		data["tag"] = tag
 	}
 
-	text, err := templatec.With("field").Parse(strings.ReplaceAll(tplText, "\n", "")).Execute(data)
+	text, err := templatex.With("field").Parse(strings.ReplaceAll(tplText, "\n", "")).Execute(data)
 	if err != nil {
 		return "", err
 	}

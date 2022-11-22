@@ -17,7 +17,7 @@ package ctx
 
 import (
 	"errors"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/pathx"
 	"go/build"
 	"os"
 	"path/filepath"
@@ -35,20 +35,20 @@ func projectFromGoPath(workDir string) (*Project, error) {
 		return nil, err
 	}
 
-	workDir, err := pathc.ReadLink(workDir)
+	workDir, err := pathx.ReadLink(workDir)
 	if err != nil {
 		return nil, err
 	}
 
 	buildContext := build.Default
 	goPath := buildContext.GOPATH
-	goPath, err = pathc.ReadLink(goPath)
+	goPath, err = pathx.ReadLink(goPath)
 	if err != nil {
 		return nil, err
 	}
 
 	goSrc := filepath.Join(goPath, "src")
-	if !pathc.FileExists(goSrc) {
+	if !pathx.FileExists(goSrc) {
 		return nil, errModuleCheck
 	}
 

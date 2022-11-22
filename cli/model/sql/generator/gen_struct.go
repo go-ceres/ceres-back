@@ -21,7 +21,7 @@ import (
 	"github.com/go-ceres/ceres/cli/model/sql/parser"
 	"github.com/go-ceres/ceres/ctx"
 	"github.com/go-ceres/ceres/utils"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/pathx"
 )
 
 //go:embed tpl/struct.tpl
@@ -38,7 +38,7 @@ func (g *Generator) genStruct(table parser.Table, projectCtx *ctx.Project, entit
 	if err != nil {
 		return "", err
 	}
-	tplText, err := pathc.LoadTpl(category, structTemplateFile, structTemplate)
+	tplText, err := pathx.LoadTpl(category, structTemplateFile, structTemplate)
 	if err != nil {
 		return "", err
 	}

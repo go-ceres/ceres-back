@@ -19,8 +19,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/go-ceres/ceres/utils/execc"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/execx"
+	"github.com/go-ceres/ceres/utils/pathx"
 	"io"
 	"os"
 	"path/filepath"
@@ -56,7 +56,7 @@ func IsGoMod(workDir string) (bool, error) {
 		return false, err
 	}
 
-	data, err := execc.Command("go list -m -f '{{.GoMod}}'", workDir)
+	data, err := execx.Command("go list -m -f '{{.GoMod}}'", workDir)
 	if err != nil || len(data) == 0 {
 		return false, nil
 	}
@@ -66,7 +66,7 @@ func IsGoMod(workDir string) (bool, error) {
 
 // GetRealModule 获取指定工作目录下的模块信息
 func GetRealModule(workDir string) (*Module, error) {
-	data, err := execc.Command("go list -json -m", workDir)
+	data, err := execx.Command("go list -json -m", workDir)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +102,7 @@ func projectFromGoMod(workDir string) (*Project, error) {
 	if len(workDir) == 0 {
 		return nil, errors.New("the work directory is not found")
 	}
-	workDir, err := pathc.ReadLink(workDir)
+	workDir, err := pathx.ReadLink(workDir)
 	if err != nil {
 		return nil, err
 	}
@@ -119,7 +119,7 @@ func projectFromGoMod(workDir string) (*Project, error) {
 	var res Project
 	res.WorkDir = workDir
 	res.Name = filepath.Base(m.Dir)
-	dir, err := pathc.ReadLink(m.Dir)
+	dir, err := pathx.ReadLink(m.Dir)
 	if err != nil {
 		return nil, err
 	}

@@ -4,7 +4,7 @@ import (
 	"container/list"
 	"errors"
 	"fmt"
-	"github.com/go-ceres/ceres/utils/stringc"
+	"github.com/go-ceres/ceres/utils/stringx"
 	"strings"
 )
 
@@ -38,10 +38,10 @@ func (m *SortedMap) SetExpression(expression string) (key, value interface{}, er
 	} else {
 		value = expression[idx+1:]
 	}
-	if keys, ok := key.(string); ok && stringc.ContainsWhiteSpace(keys) {
+	if keys, ok := key.(string); ok && stringx.ContainsWhiteSpace(keys) {
 		return "", "", ErrInvalidKVExpression
 	}
-	if values, ok := value.(string); ok && stringc.ContainsWhiteSpace(values) {
+	if values, ok := value.(string); ok && stringx.ContainsWhiteSpace(values) {
 		return "", "", ErrInvalidKVExpression
 	}
 	if len(key.(string)) == 0 {

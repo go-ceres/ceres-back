@@ -21,8 +21,8 @@ import (
 	"github.com/go-ceres/ceres/cli/model/sql/args"
 	"github.com/go-ceres/ceres/cli/model/sql/parser"
 	"github.com/go-ceres/ceres/ctx"
-	"github.com/go-ceres/ceres/utils/formatc"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/formatx"
+	"github.com/go-ceres/ceres/utils/pathx"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -67,14 +67,14 @@ func (g *Generator) GeneratorFromDDl(file string, args *args.DDlArgs) error {
 			return errors.New("the entity path and dist path are not in the same project")
 		}
 
-		err = pathc.MkdirIfNotExist(abs)
+		err = pathx.MkdirIfNotExist(abs)
 		if err != nil {
 			return err
 		}
 	}
 
 	// 5.创建输出文件夹
-	err = pathc.MkdirIfNotExist(abs)
+	err = pathx.MkdirIfNotExist(abs)
 	if err != nil {
 		return err
 	}
@@ -221,7 +221,7 @@ func (g *Generator) genRepository(table parser.Table, projectCtx *ctx.Project, e
 	if err != nil {
 		return nil, err
 	}
-	modelFilename, err := formatc.FileNamingFormat(g.config.Style,
+	modelFilename, err := formatx.FileNamingFormat(g.config.Style,
 		fmt.Sprintf("%s_model", table.Name.Source()))
 	if err != nil {
 		return nil, err
@@ -235,7 +235,7 @@ func (g *Generator) genRepository(table parser.Table, projectCtx *ctx.Project, e
 // genEntity 生成实体代码
 func (g *Generator) genEntity(table parser.Table, projectCtx *ctx.Project, entityCtx *ctx.Project, dlArgs *args.DDlArgs) (*CodeDescribe, error) {
 	res := new(CodeDescribe)
-	modelFilename, err := formatc.FileNamingFormat(g.config.Style,
+	modelFilename, err := formatx.FileNamingFormat(g.config.Style,
 		fmt.Sprintf("%s_entity", table.Name.Source()))
 	if err != nil {
 		return nil, err
@@ -268,7 +268,7 @@ func (g *Generator) genEntity(table parser.Table, projectCtx *ctx.Project, entit
 // createFile 创建文件
 func (g *Generator) createFile(codes []*CodeDescribe) error {
 	for _, code := range codes {
-		exists := pathc.FileExists(code.FileName)
+		exists := pathx.FileExists(code.FileName)
 		// 如果文件存在并且是不允许更新的情况下提示信息
 		if exists && !code.Update {
 			g.log.Warning("%s already exists, ignored.", code.FileName)

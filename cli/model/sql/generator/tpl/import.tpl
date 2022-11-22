@@ -3,7 +3,7 @@ import (
 	"github.com/go-ceres/go-ceres/cache"{{end}}{{if .hasGlobal}}
     "{{.globalImport}}"{{end}}
 	"github.com/go-ceres/go-ceres/store/gorm"{{if .entity}}
-	"github.com/go-ceres/go-ceres/utils/structure"
+	"github.com/go-ceres/go-ceres/utils/objectx"
 	{{.unTitleName}}Entity "{{.entityPath}}"{{end}}{{if .time}}
 	"time"{{end}}
 )

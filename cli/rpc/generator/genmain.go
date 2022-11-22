@@ -19,9 +19,9 @@ import (
 	_ "embed"
 	"fmt"
 	"github.com/go-ceres/ceres/cli/rpc/config"
-	"github.com/go-ceres/ceres/utils/formatc"
-	"github.com/go-ceres/ceres/utils/pathc"
-	"github.com/go-ceres/ceres/utils/templatec"
+	"github.com/go-ceres/ceres/utils/formatx"
+	"github.com/go-ceres/ceres/utils/pathx"
+	"github.com/go-ceres/ceres/utils/templatex"
 	"path/filepath"
 	"strings"
 )
@@ -37,7 +37,7 @@ type ServerTemplateData struct {
 
 // GenMain 生成main文件
 func (g *Generator) GenMain(ctx DirContext, conf *config.Config) error {
-	mainFilename, err := formatc.FileNamingFormat(g.config.Style, "main")
+	mainFilename, err := formatx.FileNamingFormat(g.config.Style, "main")
 	if err != nil {
 		return err
 	}
@@ -46,11 +46,11 @@ func (g *Generator) GenMain(ctx DirContext, conf *config.Config) error {
 	bootImport := fmt.Sprintf(`"%s"`, ctx.GetBoot().Package)
 	imports = append(imports, bootImport)
 
-	content, err := pathc.LoadTpl(category, mainTemplateFileFile, mainTemplate)
+	content, err := pathx.LoadTpl(category, mainTemplateFileFile, mainTemplate)
 	if err != nil {
 		return err
 	}
-	return templatec.With("main").GoFmt(true).Parse(content).SaveTo(map[string]interface{}{
+	return templatex.With("main").GoFmt(true).Parse(content).SaveTo(map[string]interface{}{
 		"imports":      strings.Join(imports, "\n"),
 		"configSource": conf.ConfigSource,
 		"bootBase":     ctx.GetBoot().Base,

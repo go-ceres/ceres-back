@@ -18,7 +18,7 @@ package generator
 import (
 	_ "embed"
 	"github.com/go-ceres/ceres/utils"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/pathx"
 )
 
 //go:embed tpl/entity.tpl
@@ -26,7 +26,7 @@ var entityTemplate string
 
 // genModel 生成模型代码
 func (g *Generator) genEntityCode(data map[string]interface{}) (string, error) {
-	tplText, err := pathc.LoadTpl(category, entityTemplateFIle, entityTemplate)
+	tplText, err := pathx.LoadTpl(category, entityTemplateFIle, entityTemplate)
 	if err != nil {
 		return "", err
 	}

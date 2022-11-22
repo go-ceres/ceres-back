@@ -19,7 +19,7 @@ import (
 	_ "embed"
 	"github.com/go-ceres/ceres/cli/model/sql/parser"
 	"github.com/go-ceres/ceres/utils"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/pathx"
 )
 
 //go:embed tpl/tablename.tpl
@@ -27,7 +27,7 @@ var tableNameTemplate string
 
 // genTableName 生成获取表名方法代码
 func (g *Generator) genTableName(table parser.Table, prefix string) (string, error) {
-	tplText, err := pathc.LoadTpl(category, tableNameTemplateFile, tableNameTemplate)
+	tplText, err := pathx.LoadTpl(category, tableNameTemplateFile, tableNameTemplate)
 	if err != nil {
 		return "", err
 	}

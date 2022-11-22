@@ -13,11 +13,11 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-package zipc
+package zipx
 
 import (
 	"archive/zip"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/pathx"
 	"io"
 	"os"
 	"path/filepath"
@@ -52,7 +52,7 @@ func fileCopy(file *zip.File, destPath string) error {
 	defer rc.Close()
 	filename := filepath.Join(destPath, filepath.Base(file.Name))
 	dir := filepath.Dir(filename)
-	err = pathc.MkdirIfNotExist(dir)
+	err = pathx.MkdirIfNotExist(dir)
 	if err != nil {
 		return err
 	}

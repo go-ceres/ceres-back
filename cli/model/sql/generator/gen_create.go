@@ -20,8 +20,8 @@ import (
 	"github.com/go-ceres/ceres/cli/model/sql/parser"
 	"github.com/go-ceres/ceres/ctx"
 	"github.com/go-ceres/ceres/utils"
-	"github.com/go-ceres/ceres/utils/pathc"
-	"github.com/go-ceres/ceres/utils/stringc"
+	"github.com/go-ceres/ceres/utils/pathx"
+	"github.com/go-ceres/ceres/utils/stringx"
 )
 
 //go:embed tpl/create.tpl
@@ -29,14 +29,14 @@ var createTemplate string
 
 // GenCreate 生成新增代码
 func (g *Generator) GenCreate(table parser.Table, entityCtx *ctx.Project) (string, error) {
-	tplText, err := pathc.LoadTpl(category, createTemplateFile, createTemplate)
+	tplText, err := pathx.LoadTpl(category, createTemplateFile, createTemplate)
 	if err != nil {
 		return "", err
 	}
 	text, err := utils.NewTemplate("create").Parse(tplText).Execute(map[string]interface{}{
 		"camelName":   table.Name.ToCamel(),
 		"entity":      len(entityCtx.Path) > 0,
-		"packageName": stringc.NewString(table.Name.ToCamel()).UnTitle() + "Entity",
+		"packageName": stringx.NewString(table.Name.ToCamel()).UnTitle() + "Entity",
 	})
 	if err != nil {
 		return "", err

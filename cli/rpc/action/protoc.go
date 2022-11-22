@@ -20,7 +20,7 @@ import (
 	"github.com/go-ceres/ceres/cli/rpc/config"
 	"github.com/go-ceres/ceres/cli/rpc/generator"
 	"github.com/go-ceres/ceres/utils"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/pathx"
 	"github.com/go-ceres/cli/v2"
 	"github.com/gookit/gcli/v3/interact"
 	"os"
@@ -99,11 +99,11 @@ func Protoc(ctx *cli.Context) error {
 		return err
 	}
 	// 创建goOut输出目录
-	if err := pathc.MkdirIfNotFound(conf.GoOut); err != nil {
+	if err := pathx.MkdirIfNotFound(conf.GoOut); err != nil {
 		return err
 	}
 	// 创建grpc输出目录
-	if err := pathc.MkdirIfNotFound(conf.GrpcOut); err != nil {
+	if err := pathx.MkdirIfNotFound(conf.GrpcOut); err != nil {
 		return err
 	}
 	// 组装protoc参数
@@ -125,7 +125,7 @@ func Protoc(ctx *cli.Context) error {
 	}
 	if len(home) > 0 {
 		// 注册home变量
-		pathc.RegisterCeresHome(home)
+		pathx.RegisterCeresHome(home)
 	}
 	// 设置输出目录
 	if !filepath.IsAbs(conf.Dist) {

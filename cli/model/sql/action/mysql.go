@@ -21,7 +21,7 @@ import (
 	"github.com/go-ceres/ceres/cli/model/sql/generator"
 	"github.com/go-ceres/ceres/config"
 	"github.com/go-ceres/ceres/utils"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/pathx"
 	"github.com/go-ceres/cli/v2"
 )
 
@@ -92,14 +92,14 @@ func MysqlDDl(ctx *cli.Context) error {
 		}
 	}
 	if len(ddlArgs.Home) > 0 {
-		pathc.RegisterCeresHome(ddlArgs.Home)
+		pathx.RegisterCeresHome(ddlArgs.Home)
 	}
 	conf, err := config.NewConfig(ddlArgs.Style)
 	if err != nil {
 		return err
 	}
 	ddlArgs.Config = conf
-	files, err := pathc.MatchFiles(ddlArgs.Src)
+	files, err := pathx.MatchFiles(ddlArgs.Src)
 	if err != nil {
 		return err
 	}

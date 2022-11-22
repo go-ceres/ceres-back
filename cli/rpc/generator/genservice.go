@@ -21,10 +21,10 @@ import (
 	"github.com/go-ceres/ceres/cli/rpc/config"
 	"github.com/go-ceres/ceres/cli/rpc/parser"
 	"github.com/go-ceres/ceres/cli/rpc/parser/model"
-	"github.com/go-ceres/ceres/utils/formatc"
-	"github.com/go-ceres/ceres/utils/pathc"
-	"github.com/go-ceres/ceres/utils/stringc"
-	"github.com/go-ceres/ceres/utils/templatec"
+	"github.com/go-ceres/ceres/utils/formatx"
+	"github.com/go-ceres/ceres/utils/pathx"
+	"github.com/go-ceres/ceres/utils/stringx"
+	"github.com/go-ceres/ceres/utils/templatex"
 	"path/filepath"
 	"strings"
 )
@@ -57,8 +57,8 @@ func (g *Generator) genServiceInCompatibility(ctx DirContext, proto model.Proto,
 	dir := ctx.GetService()
 	service := proto.Service[0].Service.Name
 	for _, rpc := range proto.Service[0].RPC {
-		serviceName := fmt.Sprintf("%sService", stringc.NewString(rpc.Name).ToCamel())
-		fileName, err := formatc.FileNamingFormat(g.config.Style, rpc.Name+"_service")
+		serviceName := fmt.Sprintf("%sService", stringx.NewString(rpc.Name).ToCamel())
+		fileName, err := formatx.FileNamingFormat(g.config.Style, rpc.Name+"_service")
 		if err != nil {
 			return err
 		}
@@ -70,12 +70,12 @@ func (g *Generator) genServiceInCompatibility(ctx DirContext, proto model.Proto,
 		imports := []string{
 			fmt.Sprintf(`"%v"`, ctx.GetDto().Package),
 		}
-		content, err := pathc.LoadTpl(category, serviceTemplateFileFile, serviceTemplate)
+		content, err := pathx.LoadTpl(category, serviceTemplateFileFile, serviceTemplate)
 		if err != nil {
 			return err
 		}
-		err = templatec.With("service").GoFmt(true).Parse(content).SaveTo(map[string]interface{}{
-			"serviceName": fmt.Sprintf("%sService", stringc.NewString(rpc.Name).ToCamel()),
+		err = templatex.With("service").GoFmt(true).Parse(content).SaveTo(map[string]interface{}{
+			"serviceName": fmt.Sprintf("%sService", stringx.NewString(rpc.Name).ToCamel()),
 			"functions":   functions,
 			"packageName": "service",
 			"imports":     strings.Join(imports, "\n"),
@@ -102,7 +102,7 @@ func (g *Generator) genServiceGroup(ctx DirContext, proto model.Proto, conf *con
 				packageName     string
 			)
 
-			serviceName = fmt.Sprintf("%sService", stringc.NewString(rpc.Name).ToCamel())
+			serviceName = fmt.Sprintf("%sService", stringx.NewString(rpc.Name).ToCamel())
 			childPkg, err := dir.GetChildPackage(serverName)
 			if err != nil {
 				return err
@@ -115,8 +115,8 @@ func (g *Generator) genServiceGroup(ctx DirContext, proto model.Proto, conf *con
 
 			serviceDir := filepath.Base(childPkg)
 			nameJoin := fmt.Sprintf("%s_service", serverName)
-			packageName = strings.ToLower(stringc.NewString(nameJoin).ToCamel())
-			serviceFilename, err = formatc.FileNamingFormat(g.config.Style, rpc.Name+"_service")
+			packageName = strings.ToLower(stringx.NewString(nameJoin).ToCamel())
+			serviceFilename, err = formatx.FileNamingFormat(g.config.Style, rpc.Name+"_service")
 			if err != nil {
 				return err
 			}
@@ -128,12 +128,12 @@ func (g *Generator) genServiceGroup(ctx DirContext, proto model.Proto, conf *con
 			}
 
 			imports := []string{fmt.Sprintf(`dto "%v"`, dtoPackage)}
-			text, err := pathc.LoadTpl(category, serviceTemplateFileFile, serviceTemplate)
+			text, err := pathx.LoadTpl(category, serviceTemplateFileFile, serviceTemplate)
 			if err != nil {
 				return err
 			}
 
-			if err = templatec.With("service").GoFmt(true).Parse(text).SaveTo(map[string]interface{}{
+			if err = templatex.With("service").GoFmt(true).Parse(text).SaveTo(map[string]interface{}{
 				"serviceName": serviceName,
 				"functions":   functions,
 				"packageName": packageName,
@@ -149,7 +149,7 @@ func (g *Generator) genServiceGroup(ctx DirContext, proto model.Proto, conf *con
 // genServiceFunction 生成服务方法
 func (g *Generator) genServiceFunction(serviceName, dtoPackage, logicName string, rpc *model.RPC) (string, error) {
 	functions := make([]string, 0)
-	text, err := pathc.LoadTpl(category, serviceFuncTemplateFileFile, serviceFunctionTemplate)
+	text, err := pathx.LoadTpl(category, serviceFuncTemplateFileFile, serviceFunctionTemplate)
 	if err != nil {
 		return "", err
 	}
@@ -157,7 +157,7 @@ func (g *Generator) genServiceFunction(serviceName, dtoPackage, logicName string
 	comment := parser.GetComment(rpc.Doc())
 	streamServer := fmt.Sprintf("%s.%s_%s%s", dtoPackage, parser.CamelCase(serviceName),
 		parser.CamelCase(rpc.Name), "Server")
-	buffer, err := templatec.With("fun").Parse(text).Execute(map[string]interface{}{
+	buffer, err := templatex.With("fun").Parse(text).Execute(map[string]interface{}{
 		"logicName":    logicName,
 		"method":       parser.CamelCase(rpc.Name),
 		"hasReq":       !rpc.StreamsRequest,

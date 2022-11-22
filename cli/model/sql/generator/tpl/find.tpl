@@ -6,7 +6,7 @@ func (m *default{{.camelName}}Model) FindOne(ctx context.Context,params {{if .en
 	if err != nil {
 		return nil,err
 	}{{if .entity}}
-	_ = structure.Copy(en,po)
+	_ = objectx.Copy(en,po)
 	return en,nil{{else}}
 	return po,nil
 	{{end}}

@@ -18,7 +18,7 @@ package utils
 import (
 	"fmt"
 	"github.com/go-ceres/ceres/utils/env"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/pathx"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -27,7 +27,7 @@ import (
 )
 
 func CloneIntoGitHome(url, branch string) (dir string, err error) {
-	gitHome, err := pathc.GetGitHome()
+	gitHome, err := pathx.GetGitHome()
 	if err != nil {
 		return "", err
 	}
@@ -35,7 +35,7 @@ func CloneIntoGitHome(url, branch string) (dir string, err error) {
 	ext := filepath.Ext(url)
 	repo := strings.TrimSuffix(filepath.Base(url), ext)
 	dir = filepath.Join(gitHome, repo)
-	if pathc.FileExists(dir) {
+	if pathx.FileExists(dir) {
 		_ = os.RemoveAll(dir)
 	}
 	path, err := env.LookPath("git")

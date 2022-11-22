@@ -20,9 +20,9 @@ import (
 	"github.com/go-ceres/ceres/cli/rpc/config"
 	"github.com/go-ceres/ceres/cli/rpc/parser"
 	"github.com/go-ceres/ceres/cli/rpc/parser/model"
-	"github.com/go-ceres/ceres/utils/formatc"
-	"github.com/go-ceres/ceres/utils/pathc"
-	"github.com/go-ceres/ceres/utils/templatec"
+	"github.com/go-ceres/ceres/utils/formatx"
+	"github.com/go-ceres/ceres/utils/pathx"
+	"github.com/go-ceres/ceres/utils/templatex"
 	"path/filepath"
 )
 
@@ -60,16 +60,16 @@ func (g *Generator) genDtoInCompatibility(ctx DirContext, proto model.Proto, con
 
 // genRequest 生成request的Dto文件
 func (g *Generator) genRequest(dirFileName string, packageName string, rpc *model.RPC) error {
-	content, err := pathc.LoadTpl(category, dtoTemplateFileFile, dtoTemplate)
+	content, err := pathx.LoadTpl(category, dtoTemplateFileFile, dtoTemplate)
 	if err != nil {
 		return err
 	}
-	fileName, err := formatc.FileNamingFormat(g.config.Style, rpc.RequestType)
+	fileName, err := formatx.FileNamingFormat(g.config.Style, rpc.RequestType)
 	if err != nil {
 		return err
 	}
 	dtoFilename := filepath.Join(dirFileName, fileName+".go")
-	return templatec.With("dto").GoFmt(true).Parse(content).SaveTo(map[string]interface{}{
+	return templatex.With("dto").GoFmt(true).Parse(content).SaveTo(map[string]interface{}{
 		"packageName": packageName,
 		"structName":  parser.CamelCase(rpc.RequestType),
 	}, dtoFilename, false)
@@ -77,16 +77,16 @@ func (g *Generator) genRequest(dirFileName string, packageName string, rpc *mode
 
 // genResponse 生成response的Dto文件
 func (g *Generator) genResponse(dirFileName string, packageName string, rpc *model.RPC) error {
-	content, err := pathc.LoadTpl(category, dtoTemplateFileFile, dtoTemplate)
+	content, err := pathx.LoadTpl(category, dtoTemplateFileFile, dtoTemplate)
 	if err != nil {
 		return err
 	}
-	fileName, err := formatc.FileNamingFormat(g.config.Style, rpc.ReturnsType)
+	fileName, err := formatx.FileNamingFormat(g.config.Style, rpc.ReturnsType)
 	if err != nil {
 		return err
 	}
 	dtoFilename := filepath.Join(dirFileName, fileName+".go")
-	return templatec.With("dto").GoFmt(true).Parse(content).SaveTo(map[string]interface{}{
+	return templatex.With("dto").GoFmt(true).Parse(content).SaveTo(map[string]interface{}{
 		"packageName": packageName,
 		"structName":  parser.CamelCase(rpc.ReturnsType),
 	}, dtoFilename, false)

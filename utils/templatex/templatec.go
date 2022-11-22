@@ -13,12 +13,12 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-package templatec
+package templatex
 
 import (
 	"bytes"
-	"github.com/go-ceres/ceres/utils/errorc"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/errorx"
+	"github.com/go-ceres/ceres/utils/pathx"
 	goformat "go/format"
 	"io/ioutil"
 	"text/template"
@@ -62,7 +62,7 @@ func (t *Template) GoFmt(format bool) *Template {
 
 // SaveTo writes the codes to the target path
 func (t *Template) SaveTo(data interface{}, path string, forceUpdate bool) error {
-	if pathc.FileExists(path) && !forceUpdate {
+	if pathx.FileExists(path) && !forceUpdate {
 		return nil
 	}
 
@@ -78,12 +78,12 @@ func (t *Template) SaveTo(data interface{}, path string, forceUpdate bool) error
 func (t *Template) Execute(data interface{}) (*bytes.Buffer, error) {
 	tem, err := template.New(t.name).Parse(t.text)
 	if err != nil {
-		return nil, errorc.Wrap(err, "template parse error:", t.text)
+		return nil, errorx.Wrap(err, "template parse error:", t.text)
 	}
 
 	buf := new(bytes.Buffer)
 	if err = tem.Execute(buf, data); err != nil {
-		return nil, errorc.Wrap(err, "template execute error:", t.text)
+		return nil, errorx.Wrap(err, "template execute error:", t.text)
 	}
 
 	if !t.goFmt {
@@ -92,7 +92,7 @@ func (t *Template) Execute(data interface{}) (*bytes.Buffer, error) {
 
 	formatOutput, err := goformat.Source(buf.Bytes())
 	if err != nil {
-		return nil, errorc.Wrap(err, "go format error:", buf.String())
+		return nil, errorx.Wrap(err, "go format error:", buf.String())
 	}
 
 	buf.Reset()

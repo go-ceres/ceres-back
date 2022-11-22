@@ -21,10 +21,10 @@ import (
 	"github.com/go-ceres/ceres/cli/rpc/config"
 	"github.com/go-ceres/ceres/cli/rpc/parser"
 	"github.com/go-ceres/ceres/cli/rpc/parser/model"
-	"github.com/go-ceres/ceres/utils/formatc"
-	"github.com/go-ceres/ceres/utils/pathc"
-	"github.com/go-ceres/ceres/utils/stringc"
-	"github.com/go-ceres/ceres/utils/templatec"
+	"github.com/go-ceres/ceres/utils/formatx"
+	"github.com/go-ceres/ceres/utils/pathx"
+	"github.com/go-ceres/ceres/utils/stringx"
+	"github.com/go-ceres/ceres/utils/templatex"
 	"path/filepath"
 	"strings"
 )
@@ -53,8 +53,8 @@ func (g *Generator) genLogicInCompatibility(ctx DirContext, proto model.Proto, c
 	dir := ctx.GetLogic()
 	service := proto.Service[0].Service.Name
 	for _, rpc := range proto.Service[0].RPC {
-		logicName := fmt.Sprintf("%sLogic", stringc.NewString(rpc.Name).ToCamel())
-		fileName, err := formatc.FileNamingFormat(g.config.Style, rpc.Name+"_logic")
+		logicName := fmt.Sprintf("%sLogic", stringx.NewString(rpc.Name).ToCamel())
+		fileName, err := formatx.FileNamingFormat(g.config.Style, rpc.Name+"_logic")
 		if err != nil {
 			return err
 		}
@@ -69,16 +69,16 @@ func (g *Generator) genLogicInCompatibility(ctx DirContext, proto model.Proto, c
 		if conf.DtoAndService {
 			imports = append(imports, fmt.Sprintf(`"%v"`, ctx.GetService().Package))
 		}
-		content, err := pathc.LoadTpl(category, logicTemplateFileFile, logicTemplate)
+		content, err := pathx.LoadTpl(category, logicTemplateFileFile, logicTemplate)
 		if err != nil {
 			return err
 		}
-		err = templatec.With("logic").GoFmt(true).Parse(content).SaveTo(map[string]interface{}{
-			"logicName":          fmt.Sprintf("%sLogic", stringc.NewString(rpc.Name).ToCamel()),
+		err = templatex.With("logic").GoFmt(true).Parse(content).SaveTo(map[string]interface{}{
+			"logicName":          fmt.Sprintf("%sLogic", stringx.NewString(rpc.Name).ToCamel()),
 			"functions":          functions,
 			"packageName":        "logic",
-			"serviceName":        fmt.Sprintf("%sService", stringc.NewString(rpc.Name).ToCamel()),
-			"unTitleServiceName": fmt.Sprintf("%sService", stringc.NewString(stringc.NewString(rpc.Name).ToCamel()).UnTitle()),
+			"serviceName":        fmt.Sprintf("%sService", stringx.NewString(rpc.Name).ToCamel()),
+			"unTitleServiceName": fmt.Sprintf("%sService", stringx.NewString(stringx.NewString(rpc.Name).ToCamel()).UnTitle()),
 			"dtoAndService":      conf.DtoAndService,
 			"servicePackageName": ctx.GetService().Base,
 			"extra":              extra,
@@ -106,7 +106,7 @@ func (g *Generator) genLogicGroup(ctx DirContext, proto model.Proto, conf *confi
 				packageName   string
 			)
 
-			logicName = fmt.Sprintf("%sLogic", stringc.NewString(rpc.Name).ToCamel())
+			logicName = fmt.Sprintf("%sLogic", stringx.NewString(rpc.Name).ToCamel())
 			childPkg, err := dir.GetChildPackage(serviceName)
 			if err != nil {
 				return err
@@ -114,8 +114,8 @@ func (g *Generator) genLogicGroup(ctx DirContext, proto model.Proto, conf *confi
 
 			serviceDir := filepath.Base(childPkg)
 			nameJoin := fmt.Sprintf("%s_logic", serviceName)
-			packageName = strings.ToLower(stringc.NewString(nameJoin).ToCamel())
-			logicFilename, err = formatc.FileNamingFormat(g.config.Style, rpc.Name+"_logic")
+			packageName = strings.ToLower(stringx.NewString(nameJoin).ToCamel())
+			logicFilename, err = formatx.FileNamingFormat(g.config.Style, rpc.Name+"_logic")
 			if err != nil {
 				return err
 			}
@@ -127,12 +127,12 @@ func (g *Generator) genLogicGroup(ctx DirContext, proto model.Proto, conf *confi
 			}
 
 			imports := []string{fmt.Sprintf(`"%v"`, ctx.GetPb().Package)}
-			text, err := pathc.LoadTpl(category, logicTemplateFileFile, logicTemplate)
+			text, err := pathx.LoadTpl(category, logicTemplateFileFile, logicTemplate)
 			if err != nil {
 				return err
 			}
 
-			if err = templatec.With("logic").GoFmt(true).Parse(text).SaveTo(map[string]interface{}{
+			if err = templatex.With("logic").GoFmt(true).Parse(text).SaveTo(map[string]interface{}{
 				"logicName":   logicName,
 				"functions":   functions,
 				"packageName": packageName,
@@ -147,7 +147,7 @@ func (g *Generator) genLogicGroup(ctx DirContext, proto model.Proto, conf *confi
 
 func (g *Generator) genLogicFunction(serviceName, goPackage, logicName string, rpc *model.RPC) (string, error) {
 	functions := make([]string, 0)
-	text, err := pathc.LoadTpl(category, logicFuncTemplateFileFile, logicFunctionTemplate)
+	text, err := pathx.LoadTpl(category, logicFuncTemplateFileFile, logicFunctionTemplate)
 	if err != nil {
 		return "", err
 	}
@@ -155,7 +155,7 @@ func (g *Generator) genLogicFunction(serviceName, goPackage, logicName string, r
 	comment := parser.GetComment(rpc.Doc())
 	streamServer := fmt.Sprintf("%s.%s_%s%s", goPackage, parser.CamelCase(serviceName),
 		parser.CamelCase(rpc.Name), "Server")
-	buffer, err := templatec.With("fun").Parse(text).Execute(map[string]interface{}{
+	buffer, err := templatex.With("fun").Parse(text).Execute(map[string]interface{}{
 		"logicName":    logicName,
 		"method":       parser.CamelCase(rpc.Name),
 		"hasReq":       !rpc.StreamsRequest,

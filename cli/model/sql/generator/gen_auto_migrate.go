@@ -19,7 +19,7 @@ import (
 	_ "embed"
 	"github.com/go-ceres/ceres/cli/model/sql/parser"
 	"github.com/go-ceres/ceres/utils"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/pathx"
 	"strings"
 )
 
@@ -28,7 +28,7 @@ var autoMigrateTemplate string
 
 // genAutoMigrate 生成迁移代码
 func (g *Generator) genAutoMigrate(table parser.Table) (string, error) {
-	tplText, err := pathc.LoadTpl(category, autoMigrateTemplateFile, autoMigrateTemplate)
+	tplText, err := pathx.LoadTpl(category, autoMigrateTemplateFile, autoMigrateTemplate)
 	if err != nil {
 		return "", err
 	}

@@ -15,7 +15,7 @@ func (m *default{{.camelName}}Model) QueryListBySql(ctx context.Context, params 
         return nil, err
     }
     var en {{if .entity}}{{.packageName}}.{{end}}{{.camelName}}List
-    _ = structure.Copy(&en, &po)
+    _ = objectx.Copy(&en, &po)
     qr := &{{if .entity}}{{.packageName}}.{{end}}{{.camelName}}QueryResult{
         List:       en,
         PageResult: pr,

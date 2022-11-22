@@ -19,8 +19,8 @@ import (
 	"github.com/go-ceres/ceres/cli/rpc/config"
 	"github.com/go-ceres/ceres/cli/rpc/parser/model"
 	"github.com/go-ceres/ceres/ctx"
-	"github.com/go-ceres/ceres/utils/pathc"
-	"github.com/go-ceres/ceres/utils/stringc"
+	"github.com/go-ceres/ceres/utils/pathx"
+	"github.com/go-ceres/ceres/utils/stringx"
 	"path/filepath"
 	"strings"
 )
@@ -63,7 +63,7 @@ type (
 		GetLogic() Dir
 		GetPb() Dir
 		GetProtoGo() Dir
-		GetServiceName() stringc.String
+		GetServiceName() stringx.String
 		SetPbDir(pbDir, grpcDir string)
 	}
 	// Dir 文件路径
@@ -76,7 +76,7 @@ type (
 	// defaultDirContext 文件夹管理上下文
 	defaultDirContext struct {
 		dirMap      map[string]Dir // 文件夹集合
-		serviceName stringc.String // 服务名，该类型方便对字符串进行处理
+		serviceName stringx.String // 服务名，该类型方便对字符串进行处理
 		project     *ctx.Project   // 项目上下文
 	}
 )
@@ -141,7 +141,7 @@ func (d defaultDirContext) GetProtoGo() Dir {
 	return d.dirMap[protoGoKey]
 }
 
-func (d defaultDirContext) GetServiceName() stringc.String {
+func (d defaultDirContext) GetServiceName() stringx.String {
 	return d.serviceName
 }
 
@@ -190,7 +190,7 @@ func (g *Generator) mkdir(project *ctx.Project, proto model.Proto, conf *config.
 		child := strings.TrimPrefix(childPath, parent)
 		abs := filepath.Join(parent, strings.ToLower(child))
 		if conf.Multiple {
-			if err := pathc.MkdirIfNotExist(abs); err != nil {
+			if err := pathx.MkdirIfNotExist(abs); err != nil {
 				return "", err
 			}
 		}
@@ -328,7 +328,7 @@ func (g *Generator) mkdir(project *ctx.Project, proto model.Proto, conf *config.
 		},
 	}
 	for _, dir := range dirMap {
-		err := pathc.MkdirIfNotExist(dir.Filename)
+		err := pathx.MkdirIfNotExist(dir.Filename)
 		if err != nil {
 			return nil, err
 		}
@@ -337,6 +337,6 @@ func (g *Generator) mkdir(project *ctx.Project, proto model.Proto, conf *config.
 	return &defaultDirContext{
 		dirMap:      dirMap,
 		project:     project,
-		serviceName: stringc.NewString(strings.ReplaceAll(serviceName, "-", "")),
+		serviceName: stringx.NewString(strings.ReplaceAll(serviceName, "-", "")),
 	}, nil
 }

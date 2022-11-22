@@ -18,7 +18,7 @@ package generator
 import (
 	"fmt"
 	"github.com/go-ceres/ceres/cli/rpc/config"
-	"github.com/go-ceres/ceres/utils/execc"
+	"github.com/go-ceres/ceres/utils/execx"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -36,7 +36,7 @@ func (g *Generator) genPbDirect(ctx DirContext, c *config.Config) error {
 		return err
 	}
 
-	_, err = execc.Command(c.ProtocCmd, pwd)
+	_, err = execx.Command(c.ProtocCmd, pwd)
 	if err != nil {
 		return err
 	}

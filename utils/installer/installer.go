@@ -17,7 +17,7 @@ package installer
 
 import (
 	"github.com/go-ceres/ceres/pkg/golang"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/pathx"
 	"github.com/go-ceres/ceres/utils/vars"
 	"github.com/go-ceres/go-ceres/logger"
 	"path/filepath"
@@ -35,7 +35,7 @@ func Install(cacheDir, name string, installFn func(dest string) (string, error))
 		binFile = binFile + ".exe"
 	}
 	// read cache.
-	err := pathc.Copy(cacheFile, binFile)
+	err := pathx.Copy(cacheFile, binFile)
 	if err == nil {
 		logger.Infof("%q installed from cache", name)
 		return binFile, nil
@@ -47,7 +47,7 @@ func Install(cacheDir, name string, installFn func(dest string) (string, error))
 	}
 
 	// write cache.
-	err = pathc.Copy(binFile, cacheFile)
+	err = pathx.Copy(binFile, cacheFile)
 	if err != nil {
 		logger.Warnf("write cache error: %+v", err)
 	}

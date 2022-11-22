@@ -20,7 +20,7 @@ import (
 	"github.com/go-ceres/ceres/cli/model/sql/parser"
 	"github.com/go-ceres/ceres/ctx"
 	"github.com/go-ceres/ceres/utils"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/pathx"
 	"io/ioutil"
 	"path/filepath"
 	"strings"
@@ -31,7 +31,7 @@ var newTemplate string
 
 // genNew 生成new方法代码
 func (g *Generator) genNew(table parser.Table, projectCtx *ctx.Project, cache bool) (string, error) {
-	tplText, err := pathc.LoadTpl(category, newTemplateFile, newTemplate)
+	tplText, err := pathx.LoadTpl(category, newTemplateFile, newTemplate)
 	if err != nil {
 		return "", err
 	}
@@ -39,7 +39,7 @@ func (g *Generator) genNew(table parser.Table, projectCtx *ctx.Project, cache bo
 	hasGormDb := false
 	hasCache := false
 	globalFile := filepath.Join(projectCtx.Dir, "global", "global.go")
-	if pathc.FileExists(globalFile) {
+	if pathx.FileExists(globalFile) {
 		fileContent, _ := ioutil.ReadFile(globalFile)
 		if strings.Contains(string(fileContent), "gorm.DB") {
 			hasGormDb = true

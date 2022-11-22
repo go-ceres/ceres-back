@@ -2,7 +2,7 @@ package golang
 
 import (
 	"github.com/go-ceres/ceres/ctx"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/pathx"
 	"path/filepath"
 	"strings"
 )
@@ -21,7 +21,7 @@ func GetParentPackage(dir string) (string, error) {
 	// fix https://github.com/zeromicro/go-zero/issues/1058
 	wd := projectConf.WorkDir
 	d := projectConf.Dir
-	same, err := pathc.SameFile(wd, d)
+	same, err := pathx.SameFile(wd, d)
 	if err != nil {
 		return "", err
 	}

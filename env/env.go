@@ -22,7 +22,7 @@ import (
 	"github.com/go-ceres/ceres/pkg/protocgengo"
 	"github.com/go-ceres/ceres/pkg/protocgengogrpc"
 	sortedmap "github.com/go-ceres/ceres/utils/collection"
-	"github.com/go-ceres/ceres/utils/pathc"
+	"github.com/go-ceres/ceres/utils/pathx"
 	"log"
 	"os"
 	"path/filepath"
@@ -49,7 +49,7 @@ const (
 // init initializes the ceres environment variables, the environment variables of the function are set in order,
 // please do not change the logic order of the code.
 func init() {
-	defaultCeresHome, err := pathc.GetDefaultCeresHome()
+	defaultCeresHome, err := pathx.GetDefaultCeresHome()
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -79,7 +79,7 @@ func init() {
 	}
 
 	if !ceresEnv.HasKey(CeresCache) {
-		cacheDir, _ := pathc.GetCacheDir()
+		cacheDir, _ := pathx.GetCacheDir()
 		ceresEnv.SetKV(CeresCache, cacheDir)
 	}
 
@@ -125,7 +125,7 @@ func readEnv(ceresHome string) *sortedmap.SortedMap {
 }
 
 func WriteEnv(kv []string) error {
-	defaultCeresHome, err := pathc.GetDefaultCeresHome()
+	defaultCeresHome, err := pathx.GetDefaultCeresHome()
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -140,7 +140,7 @@ func WriteEnv(kv []string) error {
 		switch key.(string) {
 		case CeresHome, CeresCache:
 			path := value.(string)
-			if !pathc.FileExists(path) {
+			if !pathx.FileExists(path) {
 				err = fmt.Errorf("[writeEnv]: path %q is not exists", path)
 				return false
 			}
